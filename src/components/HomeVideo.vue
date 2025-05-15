@@ -49,10 +49,15 @@ onMounted(() => {
 
 <style scoped>
 .home-video-container {
-  position: relative;
-  width: 100%;
+  position: fixed;
+  width: 100vw;
   height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
+  z-index: 1;
 }
 
 .background-video {
@@ -63,8 +68,6 @@ onMounted(() => {
   height: 100%;
   object-fit: cover;
   z-index: 1;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
 }
 
 .content-overlay {
@@ -81,6 +84,7 @@ onMounted(() => {
   background: rgba(0, 0, 0, 0.3);
   color: white;
   text-align: center;
+  padding-top: 60px; /* 为顶部导航留出空间 */
 }
 
 .video-title {

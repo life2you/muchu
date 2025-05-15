@@ -5,41 +5,37 @@
         <span class="logo-icon">♥</span> 我们的家
       </div>
       <nav>
-        <a href="#timeline" class="nav-link">时光轴</a>
-        <a href="#photos" class="nav-link">相册</a>
-        <a href="#videos" class="nav-link">视频</a>
+        <button 
+          @click="changeTab('home')" 
+          :class="['tab-btn', { active: activeTab === 'home' }]"
+        >
+          <span class="btn-icon">🏠</span>
+          <span class="btn-text">首页</span>
+        </button>
+        <button 
+          @click="changeTab('timeline')" 
+          :class="['tab-btn', { active: activeTab === 'timeline' }]"
+        >
+          <span class="btn-icon">📅</span>
+          <span class="btn-text">时光轴</span>
+        </button>
         <button class="theme-toggle" @click="toggleTheme">
           {{ isDarkTheme ? '☀️' : '🌙' }}
         </button>
       </nav>
     </header>
     
-    <div class="hero">
-      <div class="hero-content">
-        <h1>珍藏时光</h1>
-        <p>记录家庭的美好瞬间与成长轨迹</p>
-        <a href="#timeline" class="cta-button">浏览时间线</a>
+    <main class="main-content">
+      <!-- 首页视频 -->
+      <div v-if="activeTab === 'home'" class="tab-content">
+        <HomeVideo />
       </div>
-    </div>
-    
-    <section id="timeline" class="timeline-section">
-      <TimeLine />
-    </section>
-    
-    <div class="additional-sections-hint">
-      <div class="hint-container">
-        <div class="hint-icon">📷</div>
-        <p>您还可以浏览<a href="#photos" class="section-link">照片集</a>和<a href="#videos" class="section-link">视频集</a>来查看更多精彩瞬间</p>
+      
+      <!-- 时间线 -->
+      <div v-if="activeTab === 'timeline'" class="tab-content">
+        <TimeLine />
       </div>
-    </div>
-    
-    <section id="photos" class="section-hidden">
-      <PhotoGallery />
-    </section>
-    
-    <section id="videos" class="section-hidden">
-      <VideoGallery />
-    </section>
+    </main>
     
     <footer>
       <div class="footer-content">
@@ -51,13 +47,19 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import ImageGallery from './components/ImageGallery.vue'
-import VideoGallery from './components/VideoGallery.vue'
-import PhotoGallery from './components/PhotoGallery.vue'
 import TimeLine from './components/TimeLine.vue'
+import HomeVideo from './components/HomeVideo.vue'
 
 // 主题控制
 const isDarkTheme = ref(false)
+// 当前标签
+const activeTab = ref('home')
+
+// 切换标签
+function changeTab(tab) {
+  activeTab.value = tab
+  window.scrollTo(0, 0) // 切换标签时滚动到顶部
+}
 
 // 初始化主题
 onMounted(() => {
@@ -69,24 +71,6 @@ onMounted(() => {
     // 如果没有存储的主题，检查系统偏好
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     isDarkTheme.value = prefersDark
-  }
-  
-  // 滚动处理
-  const handleHash = () => {
-    const hash = window.location.hash;
-    if (hash) {
-      setTimeout(() => {
-        const element = document.querySelector(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  };
-  
-  window.addEventListener('hashchange', handleHash);
-  if (window.location.hash) {
-    handleHash();
   }
 })
 
@@ -163,9 +147,9 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 10%;
+  padding: 20px 10%;
   background-color: var(--header-bg);
-  box-shadow: 0 2px 15px var(--shadow-color);
+  box-shadow: 0 4px 20px var(--shadow-color);
   position: fixed;
   top: 0;
   left: 0;
@@ -176,18 +160,20 @@ header {
 }
 
 .logo {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--primary-color);
   display: flex;
   align-items: center;
   font-family: 'Ma Shan Zheng', cursive;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .logo-icon {
   color: var(--accent-color);
-  margin-right: 8px;
+  margin-right: 12px;
   animation: pulse 2s infinite;
+  font-size: 2.4rem;
 }
 
 @keyframes pulse {
@@ -198,176 +184,157 @@ header {
 
 nav {
   display: flex;
-  gap: 20px;
+  gap: 25px;
   align-items: center;
 }
 
-.nav-link {
-  text-decoration: none;
+.tab-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
   color: var(--text-color);
+  font-size: 1.15rem;
   font-weight: 500;
-  transition: all 0.3s ease;
-  padding: 8px 16px;
-  border-radius: 20px;
+  cursor: pointer;
+  padding: 12px 28px;
+  border-radius: 30px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.tab-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.7s ease;
+  z-index: -1;
+}
+
+.tab-btn:hover {
+  color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.tab-btn:hover::before {
+  left: 100%;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color) 60%, rgba(138, 168, 198, 0.9));
+  color: white;
+  box-shadow: 0 8px 25px rgba(122, 152, 184, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-icon {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.btn-text {
+  font-weight: 600;
   letter-spacing: 0.5px;
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 50%;
-  background-color: var(--primary-color);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
+.tab-btn:hover .btn-icon {
+  transform: scale(1.2);
 }
 
-.nav-link:hover::after {
-  width: 70%;
+.tab-btn.active .btn-icon {
+  animation: iconPulse 1.5s infinite alternate;
 }
 
-.nav-link:hover {
-  color: var(--primary-color);
+@keyframes iconPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.2); }
 }
 
 .theme-toggle {
-  background: none;
+  background: rgba(255, 255, 255, 0.15);
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 65px;
+  height: 65px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  background-color: var(--card-bg);
-  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 60%, rgba(255,255,255,0.1) 100%);
+  top: -25%;
+  left: -25%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
 .theme-toggle:hover {
-  transform: rotate(45deg);
+  transform: rotate(25deg) scale(1.15);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.25);
 }
 
-.hero {
-  padding: 220px 10% 180px;
-  text-align: center;
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(./assets/WechatIMG4.jpg);
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  color: white;
-  position: relative;
-  margin-top: 0;
+.theme-toggle:hover::after {
+  opacity: 1;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
-  z-index: 1;
+.dark-theme .tab-btn {
+  background: rgba(30, 30, 30, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  margin: 0 auto;
+.dark-theme .tab-btn:hover {
+  background: rgba(40, 40, 40, 0.7);
 }
 
-.hero h1 {
-  font-size: 4.5rem;
-  margin-bottom: 1.5rem;
-  font-family: 'Ma Shan Zheng', cursive;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-  letter-spacing: 3px;
+.dark-theme .theme-toggle {
+  background: rgba(30, 30, 30, 0.5);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.hero p {
-  font-size: 1.5rem;
-  max-width: 600px;
-  margin: 0 auto 40px;
-  opacity: 0.9;
+.dark-theme .theme-toggle:hover {
+  background: rgba(40, 40, 40, 0.7);
 }
 
-.cta-button {
-  display: inline-block;
-  padding: 15px 40px;
-  background-color: var(--accent-color);
-  color: white;
-  text-decoration: none;
-  border-radius: 50px;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  letter-spacing: 1px;
-}
-
-.cta-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.timeline-section {
-  background-color: var(--bg-color);
-  padding: 80px 0;
-  position: relative;
-}
-
-.additional-sections-hint {
-  text-align: center;
-  padding: 60px 20px;
-  background-color: var(--card-bg);
-}
-
-.hint-container {
-  max-width: 600px;
-  margin: 0 auto;
+.main-content {
+  margin-top: 80px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 15px;
 }
 
-.hint-icon {
-  font-size: 2.5rem;
-  color: var(--primary-color);
-}
-
-.hint-container p {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.section-link {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  font-weight: 500;
-}
-
-.section-link:hover {
-  text-decoration: underline;
-}
-
-.section-hidden {
-  padding: 80px 0;
-  background-color: var(--bg-color);
-  scroll-margin-top: 80px;
-}
-
-.section-hidden:nth-child(even) {
-  background-color: var(--card-bg);
+.tab-content {
+  width: 100%;
+  flex: 1;
 }
 
 footer {
@@ -403,21 +370,8 @@ footer {
     flex-wrap: wrap;
   }
   
-  .hero {
-    padding: 180px 5% 120px;
-  }
-  
-  .hero h1 {
-    font-size: 3rem;
-  }
-  
-  .hero p {
-    font-size: 1.2rem;
-  }
-  
-  .cta-button {
-    padding: 12px 30px;
-    font-size: 1rem;
+  .main-content {
+    margin-top: 130px;
   }
 }
 
@@ -440,7 +394,7 @@ footer {
     gap: 8px;
   }
   
-  .nav-link {
+  .tab-btn {
     padding: 6px 12px;
     font-size: 0.9rem;
   }
@@ -449,46 +403,6 @@ footer {
     width: 35px;
     height: 35px;
     font-size: 1.2rem;
-  }
-  
-  .hero {
-    padding: 150px 4% 100px;
-  }
-  
-  .hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    letter-spacing: 2px;
-  }
-  
-  .hero p {
-    font-size: 1rem;
-    margin: 0 auto 30px;
-  }
-  
-  .cta-button {
-    padding: 10px 25px;
-    font-size: 0.9rem;
-  }
-  
-  .timeline-section {
-    padding: 60px 0;
-  }
-  
-  .section-hidden {
-    padding: 60px 0;
-  }
-  
-  .additional-sections-hint {
-    padding: 40px 15px;
-  }
-  
-  .hint-icon {
-    font-size: 2rem;
-  }
-  
-  .hint-container p {
-    font-size: 0.9rem;
   }
   
   footer {
@@ -507,21 +421,13 @@ footer {
     font-size: 1.3rem;
   }
   
-  .nav-link {
+  .tab-btn {
     padding: 5px 10px;
     font-size: 0.85rem;
   }
   
-  .hero h1 {
-    font-size: 2.2rem;
-  }
-  
-  .hero p {
-    font-size: 0.9rem;
-  }
-  
-  .cta-button {
-    padding: 8px 20px;
+  .main-content {
+    margin-top: 110px;
   }
 }
 </style>

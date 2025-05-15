@@ -78,14 +78,14 @@ const timelineEvents = [
         date: '2024年6月1日',
         title: '家庭旅行 - 海边度假',
         description: '我们全家一起去了海边度假，孩子们第一次看到了大海，非常兴奋！',
-        image: new URL('../assets/WechatIMG4.jpg', import.meta.url).href,
+        image: 'https://picsum.photos/500/300?random=1',
         tags: ['旅行', '全家福']
       },
       {
         date: '2024年5月10日',
         title: '小明六岁生日',
         description: '小明度过了他六岁的生日，我们举办了一个恐龙主题的派对。',
-        image: new URL('../assets/WechatIMG5.jpg', import.meta.url).href,
+        image: 'https://picsum.photos/500/300?random=2',
         tags: ['生日', '派对']
       }
     ]
@@ -97,21 +97,21 @@ const timelineEvents = [
         date: '2023年12月25日',
         title: '温馨圣诞节',
         description: '全家人在家中一起装饰圣诞树、交换礼物，度过了一个温馨的圣诞节。',
-        image: new URL('../assets/WechatIMG4.jpg', import.meta.url).href,
+        image: 'https://picsum.photos/500/300?random=3',
         tags: ['节日', '家庭活动']
       },
       {
         date: '2023年8月15日',
         title: '家庭野餐日',
         description: '在附近的公园进行了一次家庭野餐，天气很好，大家玩得很开心。',
-        image: new URL('../assets/WechatIMG5.jpg', import.meta.url).href,
+        image: 'https://picsum.photos/500/300?random=4',
         tags: ['户外', '野餐']
       },
       {
         date: '2023年2月1日',
         title: '新年团聚',
         description: '春节期间全家团聚，一起包饺子、看春晚，欢度新春佳节。',
-        image: new URL('../assets/WechatIMG4.jpg', import.meta.url).href,
+        image: 'https://picsum.photos/500/300?random=5',
         tags: ['春节', '团聚']
       }
     ]
@@ -123,7 +123,7 @@ const timelineEvents = [
         date: '2022年10月7日',
         title: '国庆出游',
         description: '国庆长假期间，我们全家去了古镇旅游，体验了当地的文化和美食。',
-        image: new URL('../assets/WechatIMG5.jpg', import.meta.url).href,
+        image: 'https://picsum.photos/500/300?random=6',
         tags: ['旅行', '文化']
       }
     ]
@@ -171,7 +171,7 @@ onMounted(() => {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 60px 20px 40px;
   position: relative;
 }
 
